@@ -13,6 +13,7 @@ var cheerio = require('cheerio');
 var request = require('request');
 var nock = require('nock');
 var fs = require('fs');
+var config = require('./config.json');
 
 if (argv._.length < 1) {
   console.log(process.argv[0] + ' <instagram screen name>');
@@ -24,17 +25,17 @@ var send_to_librato = argv.librato;
 var send_to_statsd = argv.statsd;
 var sdc;
 
-if (send_to_librato) {
-  librato.configure({ email: 'oogali@gmail.com', token: '288a6ac163f1c2454df16b27714480ade4f4fedbbfd184363d6e070c757889bb', period: 1 });
-}
-
-if (send_to_statsd) {
-  sdc = new statsd({ host: 'stats.lab.idlepattern.com', debug: true });
-}
-
 if (!send_to_librato && !send_to_statsd) {
   console.log('No stats collection method selected!');
   process.exit(-1);
+}
+
+if (send_to_librato && config.librato) {
+  librato.configure({ email: config.librato.email, token: config.librato.api_key, period: 1 });
+}
+
+if (send_to_statsd) {
+  sdc = new statsd({ host: config.statsd.host, port: config.statsd.port, debug: config.debug });
 }
 
 targets.forEach(function(target, index) {

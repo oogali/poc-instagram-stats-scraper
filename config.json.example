@@ -1,0 +1,12 @@
+{
+    "scraper": {
+        "librato": {
+            "email": "test@testing.com",
+            "api_key": "XXXXXXXX"
+        },
+        "statsd": {
+            "host": "localhost",
+            "port": 8125
+        }
+    }
+}
